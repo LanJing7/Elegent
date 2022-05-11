@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+	</head>
+	<link rel="stylesheet" href="css/index.css">
+	<script src="js/jquery-1.12.1.min.js"></script>
+	<body>
+		<div id="max">
+					<div class="lbt-div">
+						<img src="img/tu1.jpg">
+						<img src="img/tu2.jpg">
+						<img src="img/tu3.jpg">
+						<img src="img/tu4.jpg">
+					</div>
+					<div class="arrow">
+						<span class="left"><</span>
+						<span class="right">></span>
+					</div>
+					<ul class="uldiv">
+						<li class="circle active" data-n="0"></li>
+						<li class="circle" data-n="1"></li>
+						<li class="circle" data-n="2"></li>
+						<li class="circle" data-n="3"></li>
+					</ul>
+				</div>
+	</body>
+	<script>
+	// 获取左右按钮和图片列表
+	  let oleft = document.querySelector(".left");
+	  let oright = document.querySelector(".right")
+	  let oImg = document.querySelector(".lbt-div");
+	
+	  //图片克隆 
+	  let clonefristImg = oImg.firstElementChild.cloneNode();
+	  oImg.appendChild(clonefristImg)
+	  // 定义 index,代表当前图片
+	  let index = 0
+	  let lock = true;
+	
+	  function handlerightBtn() {
+	   if(!lock)return;
+	   index++;
+	   oImg.style.left = index * -300 + "px";
+	   // 过渡
+	   oImg.style.transition = "0.5s ease"
+	   if (index === 4) {
+	    index = 0
+	    setTimeout(() => {
+	     index = 0;
+	     oImg.style.left = 0
+	     oImg.style.transition = "none"
+	    }, 500)
+	   }
+	   setcircles();
+	   lock=false;
+	   setTimeout(()=>{
+	    lock=true
+	   },500)
+	  }
+	  oright.addEventListener("click", handlerightBtn);
+	
+	  oleft.addEventListener("click", () => {
+	   if(!lock)return;
+	   index--;
+	   if (index === -1) {
+	    oImg.style.left = 4 * -300 + "px";
+	    oImg.style.transition = "none";
+	    index = 3;
+	    setTimeout(() => {
+	     oImg.style.left = index * -300 + "px";
+	     oImg.style.transition = "0.5s ease"
+	    }, 0)
+	   } else {
+	    oImg.style.left = index * -300 + "px";
+	   }
+	   setcircles();
+	   lock=false;
+	   setTimeout(()=>{
+	    lock=true
+	   },500)
+	  })
+	
+	  const circles = document.querySelectorAll(".circle");
+	
+	  function setcircles() {
+	   for (let i = 0; i < circles.length; i++) {
+	    if (i == index) {
+	     circles[i].classList.add("active")
+	    } else {
+	     circles[i].classList.remove("active")
+	    }
+	   }
+	  }
+	  // 小圆点点击切换图片 使用事件代理
+	  const oCircle = document.querySelector(".uldiv")
+	
+	  oCircle.addEventListener("click", (e) => {
+	   console.log(e.target)
+	   if (e.target.nodeName.toLowerCase() === "li") {
+	    // 当前元素的data-n对应的值和index对应
+	    const n = (Number(e.target.getAttribute("data-n")))
+	    index = n
+	    setcircles();
+	    oImg.style.left = index * -300 + "px"
+	   }
+	  })
+	
+	  // 自动轮播
+	  let aut = setInterval(handlerightBtn, 2000)
+	  const owarp = document.getElementById("max");
+	  // 移入停止轮播
+	  owarp.addEventListener("mouseenter", () => {
+	   clearInterval(aut)
+	  })
+	  // 移除继续轮播
+			owarp.addEventListener("mouseleave",()=>{
+				clearInterval(aut);
+				aut = setInterval(handlerightBtn,2000);
+			})
+
+	</script>
+</html>
